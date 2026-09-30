@@ -44,12 +44,12 @@ type Modal =
   | null;
 
 const tracks: Track[] = [
-  { id: 'tidepool', title: 'Tidepool Sketch', artist: 'nle.cc Studio', album: 'Little Weather', mood: 'Soft piano', duration: 228, color: 'linear-gradient(145deg,#d99b73,#b75e54 58%,#5b8175)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-  { id: 'open-window', title: 'Open Window', artist: 'nle.cc Studio', album: 'Rooms of Air', mood: 'Ambient', duration: 246, color: 'linear-gradient(145deg,#a6bd9b,#668878 58%,#3c645a)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-  { id: 'slow-orbit', title: 'Slow Orbit', artist: 'nle.cc Studio', album: 'Small Planets', mood: 'Warm synth', duration: 212, color: 'linear-gradient(145deg,#dfbd7f,#c97d61 58%,#8a695f)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-  { id: 'blue-hour', title: 'Blue Hour, Softly', artist: 'nle.cc Studio', album: 'After the Rain', mood: 'Piano & strings', duration: 264, color: 'linear-gradient(145deg,#91b2b0,#587f86 56%,#405c67)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-  { id: 'paper-moon', title: 'Paper Moon', artist: 'nle.cc Studio', album: 'Little Weather', mood: 'Muted guitar', duration: 195, color: 'linear-gradient(145deg,#dbc08f,#cb8b6b 55%,#876c58)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
-  { id: 'still-garden', title: 'Still Garden', artist: 'nle.cc Studio', album: 'Green Things', mood: 'Field tones', duration: 237, color: 'linear-gradient(145deg,#aabd85,#759271 54%,#4c7062)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
+  { id: 'tidepool', title: 'Tidepool Sketch', artist: 'nle.cc Studio', album: 'Little Weather', mood: 'Soft piano', duration: 228, color: 'linear-gradient(145deg,#35b9c9,#3d65b8 58%,#14234b)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+  { id: 'open-window', title: 'Open Window', artist: 'nle.cc Studio', album: 'Rooms of Air', mood: 'Ambient', duration: 246, color: 'linear-gradient(145deg,#4bc3c8,#287b98 58%,#173157)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+  { id: 'slow-orbit', title: 'Slow Orbit', artist: 'nle.cc Studio', album: 'Small Planets', mood: 'Warm synth', duration: 212, color: 'linear-gradient(145deg,#9384f1,#5968c5 58%,#1b2c61)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+  { id: 'blue-hour', title: 'Blue Hour, Softly', artist: 'nle.cc Studio', album: 'After the Rain', mood: 'Piano & strings', duration: 264, color: 'linear-gradient(145deg,#72cce0,#567bc3 56%,#252d63)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+  { id: 'paper-moon', title: 'Paper Moon', artist: 'nle.cc Studio', album: 'Little Weather', mood: 'Muted guitar', duration: 195, color: 'linear-gradient(145deg,#859bdb,#696ab5 55%,#30386d)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+  { id: 'still-garden', title: 'Still Garden', artist: 'nle.cc Studio', album: 'Green Things', mood: 'Field tones', duration: 237, color: 'linear-gradient(145deg,#45c0b5,#3889a5 54%,#174568)', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
 ];
 
 const formatTime = (seconds: number) => {
@@ -372,7 +372,7 @@ function App() {
                   <section style={{ marginTop: 40 }}>
                     <div className="section-head"><div><h2 className="section-title">Your playlists</h2><p className="section-subtitle">Little collections, made by you.</p></div><button className="text-action" onClick={() => { setModalName(''); setModal({ type: 'create' }); }} data-testid="button-library-create-playlist">Create new <Plus size={14} /></button></div>
                     <div className="recent-grid">
-                      {playlists.map((playlist) => <button className="recent-card" key={playlist.id} onClick={() => openPlaylist(playlist.id)} data-testid={`card-playlist-${playlist.id}`}><span className="cover small" style={{ '--cover': 'linear-gradient(145deg,#edb37d,#cf765e 55%,#52796c)' } as CSSProperties}><ListMusic size={18} /></span><span className="recent-info"><strong>{playlist.name}</strong><span>{playlist.trackIds.length} {playlist.trackIds.length === 1 ? 'track' : 'tracks'}</span></span><ChevronRight className="card-play" size={16} /></button>)}
+                      {playlists.map((playlist) => <button className="recent-card" key={playlist.id} onClick={() => openPlaylist(playlist.id)} data-testid={`card-playlist-${playlist.id}`}><span className="cover small" style={{ '--cover': 'linear-gradient(145deg,#4bc3c8,#696ab5 55%,#1c2e59)' } as CSSProperties}><ListMusic size={18} /></span><span className="recent-info"><strong>{playlist.name}</strong><span>{playlist.trackIds.length} {playlist.trackIds.length === 1 ? 'track' : 'tracks'}</span></span><ChevronRight className="card-play" size={16} /></button>)}
                     </div>
                   </section>
                 )}
