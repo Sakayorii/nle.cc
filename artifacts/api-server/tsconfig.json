@@ -5,6 +5,7 @@
     "tsBuildInfoFile": ".tsbuildinfo",
     "outDir": "dist",
     "rootDir": "src",
+    "lib": ["es2022", "webworker"],
     "types": ["node"]
   },
   "include": ["src"],

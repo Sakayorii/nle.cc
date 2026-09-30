@@ -1,0 +1,13 @@
+name = "nle-cc-frontend"
+main = "./cloudflare/worker.ts"
+compatibility_date = "2026-09-30"
+workers_dev = true
+
+[build]
+command = "PORT=5000 BASE_PATH=/ pnpm --filter @workspace/soundwave run build"
+
+[assets]
+directory = "./artifacts/soundwave/dist/public"
+binding = "ASSETS"
+run_worker_first = true
+not_found_handling = "single-page-application"
