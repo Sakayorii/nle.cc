@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "pnpm --filter @workspace/api-server run build"
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": null
 }
