@@ -1,40 +1,36 @@
-# Deployment setup
+# Deployment
 
-This repo is set up for a split deployment:
+One Cloudflare Worker serves everything:
 
-- Frontend: Cloudflare Worker
-- API: Vercel
+- Frontend: static assets built from `artifacts/soundwave`
+  (`pnpm --filter @workspace/soundwave run build`)
+- API: the Hono app in `artifacts/api-server`, mounted at `/api/*`
+  by `cloudflare/worker.ts`
 
-## 1) Deploy API to Vercel
-
-1. Push the repo to GitHub.
-2. Import the project into Vercel.
-3. Set the Vercel project root directory to the repository root. `vercel.json` limits the build command to the API package; the function in `api/` routes requests to the Express app in `artifacts/api-server`.
-4. Deploy. The API health route is:
-   - `/api/healthz`
-
-Example response:
-
-```json
-{ "status": "ok" }
-```
-
-## 2) Deploy frontend to Cloudflare Worker
-
-1. Add the Vercel deployment origin as a Cloudflare Worker secret:
+## Deploy
 
 ```bash
-pnpm --filter @workspace/api-server exec wrangler secret put API_BASE_URL --config ../../wrangler.toml
+pnpm --filter @workspace/api-server run deploy:worker
 ```
 
-Enter the Vercel origin, for example `https://your-project.vercel.app` (without an `/api` suffix).
+This builds the frontend, then runs `wrangler deploy` from the repo root
+using `wrangler.toml`.
 
-2. Deploy from the repository root:
+## Local dev
 
-```bash
-pnpm --filter @workspace/api-server exec wrangler deploy --config ../../wrangler.toml
-```
+- API only (Node, port 5000):
+  `PORT=5000 pnpm --filter @workspace/api-server run dev`
+- Full worker (frontend + API on the Workers runtime):
+  `pnpm --filter @workspace/api-server run dev:worker`
 
-Wrangler builds `artifacts/soundwave` and publishes its static output as Worker assets. The Worker serves those assets for frontend routes and proxies `/api/*` to Vercel.
+## Database
 
-The frontend calls the same-origin `/api` path, so browser requests stay on Cloudflare and do not need a separate API URL or cross-origin CORS setup.
+Routes that need Postgres call `getDb(env)` from `@workspace/db`
+(postgres-js driver, lazy init, no work at import time). On Workers,
+bind Hyperdrive:
+
+1. `wrangler hyperdrive create nle-db --connection-string="$DATABASE_URL"`
+2. Uncomment the `[[hyperdrive]]` block in `wrangler.toml` and paste the id.
+
+Without Hyperdrive you can `wrangler secret put DATABASE_URL`
+(slower; Hyperdrive is recommended).

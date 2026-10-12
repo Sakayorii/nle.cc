@@ -1,16 +1,26 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 
-const { Pool } = pg;
-
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+export interface DbEnv {
+  DATABASE_URL?: string;
+  HYPERDRIVE?: { connectionString: string };
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+let cached: PostgresJsDatabase<typeof schema> | undefined;
+
+export function getDb(env: DbEnv): PostgresJsDatabase<typeof schema> {
+  if (cached) return cached;
+  const connectionString = env.HYPERDRIVE?.connectionString ?? env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error(
+      "No database connection string. Bind a Hyperdrive database as HYPERDRIVE or set DATABASE_URL.",
+    );
+  }
+  cached = drizzle(postgres(connectionString, { prepare: false }), {
+    schema,
+  });
+  return cached;
+}
 
 export * from "./schema";

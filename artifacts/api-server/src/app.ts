@@ -1,34 +1,19 @@
-import express, { type Express } from "express";
-import cors from "cors";
-import pinoHttp from "pino-http";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
 import router from "./routes";
-import { logger } from "./lib/logger";
 
-const app: Express = express();
+export interface AppEnv {
+  LOG_LEVEL?: string;
+  DATABASE_URL?: string;
+  HYPERDRIVE?: { connectionString: string };
+}
 
-app.use(
-  pinoHttp({
-    logger,
-    serializers: {
-      req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
-    },
-  }),
-);
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = new Hono<{ Bindings: AppEnv }>();
 
-app.use("/api", router);
+app.use(logger());
+app.use("/api/*", cors());
+
+app.route("/api", router);
 
 export default app;

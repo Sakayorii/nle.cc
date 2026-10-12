@@ -1,45 +1,33 @@
-type Env = {
-  API_BASE_URL?: string;
-  ASSETS: { fetch(request: Request): Promise<Response> };
-};
+import api from "../artifacts/api-server/src/app";
 
-async function proxyApi(request: Request, apiBase: string): Promise<Response> {
-  const url = new URL(request.url);
-  const target = new URL(`${url.pathname}${url.search}`, apiBase);
-
-  const init: RequestInit = {
-    method: request.method,
-    headers: request.headers,
+interface Env {
+  ASSETS: {
+    fetch(request: Request): Promise<Response>;
   };
+  LOG_LEVEL?: string;
+  DATABASE_URL?: string;
+  HYPERDRIVE?: { connectionString: string };
+}
 
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
-    init.body = await request.clone().text();
+async function serveFrontend(request: Request, env: Env): Promise<Response> {
+  const response = await env.ASSETS.fetch(request);
+
+  if (response.status === 404 && request.method === "GET") {
+    const indexRequest = new Request(new URL("/index.html", request.url), request);
+    return env.ASSETS.fetch(indexRequest);
   }
 
-  const response = await fetch(target, init);
-
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: response.headers,
-  });
+  return response;
 }
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.pathname === '/api' || url.pathname.startsWith('/api/')) {
-      if (!env.API_BASE_URL) {
-        return Response.json(
-          { error: 'API_BASE_URL is not configured' },
-          { status: 500 },
-        );
-      }
-
-      return proxyApi(request, env.API_BASE_URL);
+    if (url.pathname === "/api" || url.pathname.startsWith("/api/")) {
+      return api.fetch(request, env);
     }
 
-    return env.ASSETS.fetch(request);
+    return serveFrontend(request, env);
   },
 };
